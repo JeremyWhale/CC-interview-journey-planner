@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/JourneyEntryView.css';
 
 const JourneyEntryView: React.FC = () => {
   return (

@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/ResultView.css';
 
 const ResultView: React.FC = () => {
   return (

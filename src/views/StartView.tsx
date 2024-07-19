@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/StartView.css';
 
 const StartView: React.FC = () => {
   return (
