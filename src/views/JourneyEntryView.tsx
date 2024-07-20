@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/JourneyEntryView.css';
 import { ReactComponent as UpArrow } from '../assets/up-arrow.svg';
 import { ReactComponent as DownArrow } from '../assets/down-arrow.svg';
+import { calculateJourney, JourneySegment } from '../utils/api';
 
 interface PostcodeEntry {
   id: number;
@@ -13,17 +14,17 @@ const JourneyEntryView: React.FC = () => {
   const [postcodes, setPostcodes] = useState<PostcodeEntry[]>([]);
   const [currentPostcode, setCurrentPostcode] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const isValidUKPostcode = (postcode: string) => {
     // This regex validates UK postcodes:
     // - Starts with 1 or 2 letters
     // - Followed by 1 or 2 numbers 
     // - Optionally followed by a letter
     // - Optionally followed by a space
     // - Ends with a number and 2 letters 
+  const isValidUKPostcode = (postcode: string) => {
     const regex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
-
     return regex.test(postcode);
   };
 
@@ -51,13 +52,27 @@ const JourneyEntryView: React.FC = () => {
     }
   };
 
-  const handleCalculateJourney = () => {
+  const handleCalculateJourney = async () => {
     if (postcodes.length < 2) {
       setError('Please enter at least two postcodes');
-    } else {
-      // TODO: API call for actually calculating
-      console.log('Calculating journey for:', postcodes.map(p => p.postcode));
-      navigate('/result', { state: { postcodes: postcodes.map(p => p.postcode) } });
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const journeySegments = await calculateJourney(postcodes.map(p => p.postcode));
+      navigate('/result', {
+        state: {
+          postcodes: postcodes.map(p => p.postcode),
+          journeySegments
+        }
+      });
+    } catch (error) {
+      setError('An error occurred while calculating the journey. Please check your postcodes and try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,36 +90,42 @@ const JourneyEntryView: React.FC = () => {
       </div>
       {error && <p className="error">{error}</p>}
       <ul className="postcode-list">
-      {postcodes.map((entry, index) => (
-        <li key={entry.id}>
-          <span className="postcode">{entry.postcode}</span>
-          <div className="button-group">
-            <button onClick={() => handleRemovePostcode(entry.id)}>Remove</button>
-            <div className="move-button-container">
-              <span className="move-label">Up</span>
-              <button
-                className="move-button"
-                onClick={() => handleMovePostcode(index, 'up')}
-                disabled={index === 0}
-              >
-                <UpArrow />
-              </button>
+        {postcodes.map((entry, index) => (
+          <li key={entry.id}>
+            <span className="postcode">{entry.postcode}</span>
+            <div className="button-group">
+              <button onClick={() => handleRemovePostcode(entry.id)}>Remove</button>
+              <div className="move-button-container">
+                <span className="move-label">Up</span>
+                <button
+                  className="move-button"
+                  onClick={() => handleMovePostcode(index, 'up')}
+                  disabled={index === 0}
+                >
+                  <UpArrow />
+                </button>
+              </div>
+              <div className="move-button-container">
+                <span className="move-label">Down</span>
+                <button
+                  className="move-button"
+                  onClick={() => handleMovePostcode(index, 'down')}
+                  disabled={index === postcodes.length - 1}
+                >
+                  <DownArrow />
+                </button>
+              </div>
             </div>
-            <div className="move-button-container">
-              <span className="move-label">Down</span>
-              <button
-                className="move-button"
-                onClick={() => handleMovePostcode(index, 'down')}
-                disabled={index === postcodes.length - 1}
-              >
-                <DownArrow />
-              </button>
-            </div>
-          </div>
-        </li>
-      ))}
-    </ul>
-      <button onClick={handleCalculateJourney} className="calculate-button">Calculate Journey</button>
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={handleCalculateJourney}
+        className="calculate-button"
+        disabled={isLoading}
+      >
+        {isLoading ? 'Calculating...' : 'Calculate Journey'}
+      </button>
     </div>
   );
 };
