@@ -1,5 +1,3 @@
-const API_BASE_URL = 'https://media.carecontrolsystems.co.uk/Travel/JourneyPlan.aspx';
-
 export interface JourneySegment {
   time: number;
   distance: number | undefined;
