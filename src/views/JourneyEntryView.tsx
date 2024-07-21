@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/JourneyEntryView.css';
 import { ReactComponent as UpArrow } from '../assets/up-arrow.svg';
 import { ReactComponent as DownArrow } from '../assets/down-arrow.svg';
-import { calculateJourney, JourneySegment } from '../utils/api';
+import { calculateJourney } from '../utils/api';
 
 interface PostcodeEntry {
   id: number;
