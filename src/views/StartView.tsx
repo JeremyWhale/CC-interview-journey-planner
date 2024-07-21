@@ -12,7 +12,7 @@ const StartView: React.FC = () => {
   return (
     <div className="start-view">
       <h2>Welcome to Journey Planner</h2>
-      <button className="start-button" onClick={handleStartJourney}>
+      <button className="start-button" aria-label="Start planning" onClick={handleStartJourney}>
         Start Journey
       </button>
     </div>
