@@ -12,9 +12,9 @@ const ResultView: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { postcodes, journeySegments } = location.state as LocationState;
-
+  
   const totalTime = journeySegments.reduce((sum, segment) => sum + segment.time, 0);
-  const totalDistance = journeySegments.reduce((sum, segment) => sum + segment.distance, 0);
+  const totalDistance = journeySegments.reduce((sum, segment) => sum + (segment.distance ?? 0), 0);
 
   const handleStartOver = () => {
     navigate('/journey-entry', { state: { previousPostcodes: postcodes } });
@@ -34,12 +34,12 @@ const ResultView: React.FC = () => {
         </thead>
         <tbody>
           {journeySegments.map((segment, index) => (
-            <tr key={index}>
-              <td>{postcodes[index]}</td>
-              <td>{postcodes[index + 1]}</td>
-              <td>{segment.time}</td>
-              <td>{segment.distance.toFixed(1)}</td>
-            </tr>
+          <tr key={index}>
+            <td>{postcodes[index]}</td>
+            <td>{postcodes[index + 1]}</td>
+            <td>{segment.time}</td>
+            <td>{segment.distance !== undefined ? segment.distance.toFixed(1) : 'N/A'}</td>
+          </tr>
           ))}
         </tbody>
       </table>
