@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/JourneyEntryView.css';
 import { ReactComponent as UpArrow } from '../assets/up-arrow.svg';
 import { ReactComponent as DownArrow } from '../assets/down-arrow.svg';
@@ -10,12 +10,27 @@ interface PostcodeEntry {
   postcode: string;
 }
 
+interface LocationState {
+  previousPostcodes?: string[];
+}
+
 const JourneyEntryView: React.FC = () => {
   const [postcodes, setPostcodes] = useState<PostcodeEntry[]>([]);
   const [currentPostcode, setCurrentPostcode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const state = location.state as LocationState;
+    if (state && state.previousPostcodes) {
+      setPostcodes(state.previousPostcodes.map((postcode, index) => ({
+        id: index,
+        postcode: postcode
+      })));
+    }
+  }, [location.state]);
 
     // This regex validates UK postcodes:
     // - Starts with 1 or 2 letters
@@ -131,3 +146,4 @@ const JourneyEntryView: React.FC = () => {
 };
 
 export default JourneyEntryView;
+

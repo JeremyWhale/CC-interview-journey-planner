@@ -17,7 +17,7 @@ const ResultView: React.FC = () => {
   const totalDistance = journeySegments.reduce((sum, segment) => sum + segment.distance, 0);
 
   const handleStartOver = () => {
-    navigate('/');
+    navigate('/journey-entry', { state: { previousPostcodes: postcodes } });
   };
 
   return (
