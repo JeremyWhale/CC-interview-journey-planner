@@ -1,6 +1,12 @@
-# Getting Started with Create React App
+# Journey Planner
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+This is an application to demonstrate my frontend development skills to Care Control Systems for interview 22/07/24.
+
+All branches have been left undeleted to show development process.
+
+The default scripts for running the app can be found below.
 
 ## Available Scripts
 

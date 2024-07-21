@@ -47,7 +47,7 @@ const ResultView: React.FC = () => {
         <p>Total Travel Time: {totalTime} minutes</p>
         <p>Total Travel Distance: {totalDistance.toFixed(1)} miles</p>
       </div>
-      <button onClick={handleStartOver} className="start-over-button">Start Over</button>
+      <button onClick={handleStartOver} className="start-over-button" aria-label="Return to postcode input">Start Over</button>
     </div>
   );
 };

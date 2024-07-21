@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/JourneyEntryView.css';
 import { ReactComponent as UpArrow } from '../assets/up-arrow.svg';
 import { ReactComponent as DownArrow } from '../assets/down-arrow.svg';
-import { calculateJourney, JourneySegment } from '../utils/api';
+import { calculateJourney } from '../utils/api';
 
 interface PostcodeEntry {
   id: number;
@@ -96,12 +96,13 @@ const JourneyEntryView: React.FC = () => {
       <h2>Enter Your Journey</h2>
       <div className="postcode-input">
         <input
+          aria-label="Input postcode"
           type="text"
           value={currentPostcode}
           onChange={(e) => setCurrentPostcode(e.target.value)}
           placeholder="Enter UK Postcode"
         />
-        <button onClick={handleAddPostcode}>Add</button>
+        <button aria-label="Add Item" onClick={handleAddPostcode}>Add</button>
       </div>
       {error && <p className="error">{error}</p>}
       <ul className="postcode-list">
@@ -113,6 +114,7 @@ const JourneyEntryView: React.FC = () => {
               <div className="move-button-container">
                 <span className="move-label">Up</span>
                 <button
+                  aria-label="Move item up"
                   className="move-button"
                   onClick={() => handleMovePostcode(index, 'up')}
                   disabled={index === 0}
@@ -123,6 +125,7 @@ const JourneyEntryView: React.FC = () => {
               <div className="move-button-container">
                 <span className="move-label">Down</span>
                 <button
+                  aria-label="Move item down"
                   className="move-button"
                   onClick={() => handleMovePostcode(index, 'down')}
                   disabled={index === postcodes.length - 1}
@@ -136,6 +139,7 @@ const JourneyEntryView: React.FC = () => {
       </ul>
       <button
         onClick={handleCalculateJourney}
+        aria-label="Calculate Journey"
         className="calculate-button"
         disabled={isLoading}
       >
