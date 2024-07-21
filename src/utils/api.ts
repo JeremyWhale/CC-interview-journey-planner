@@ -2,28 +2,24 @@ const API_BASE_URL = 'https://media.carecontrolsystems.co.uk/Travel/JourneyPlan.
 
 export interface JourneySegment {
   time: number;
-  distance: number;
+  distance: number | undefined;
 }
 
 export const calculateJourney = async (postcodes: string[]): Promise<JourneySegment[]> => {
-  const route = postcodes.join(',');
-  const url = `${API_BASE_URL}?Route=${route}&Format=Miles&TravelMode=Driving`;
-
+  const url = `https://media.carecontrolsystems.co.uk/Travel/JourneyPlan.aspx?Route=${postcodes.join(',')}&Format=Miles&TravelMode=Driving`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
     }
     const data = await response.text();
     const segments = data.split(';').filter(segment => segment.trim() !== '');
-
-    if (segments.length !== postcodes.length - 1) {
-      throw new Error('Invalid response from the server. Please check your postcodes.');
-    }
-
     return segments.map(segment => {
       const [time, distance] = segment.split(',').map(Number);
-      return { time, distance };
+      return {
+        time: isNaN(time) ? 0 : time,
+        distance: isNaN(distance) ? undefined : distance
+      };
     });
   } catch (error) {
     console.error('Error calculating journey:', error);
